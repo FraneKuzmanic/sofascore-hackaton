@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 
 const glassHeaderStyle = {
   background: 'rgba(250, 250, 249, 0.85)',
@@ -86,14 +87,16 @@ const Header = () => {
           <button
             type="button"
             onClick={() => setProfileModalOpen(true)}
-            className="group rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
+            className="group relative rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
             aria-label="Open profile photo"
           >
+            <span className="absolute -inset-1 rounded-[1.15rem] bg-gradient-to-br from-teal-500/50 to-stone-300 opacity-80 transition-opacity duration-300 group-hover:opacity-100"></span>
             <img
               src="/images/profile.jpg"
               alt="Frane Kuzmanić"
-              className="h-10 w-10 rounded-xl border border-stone-200 object-cover object-[78%_center] shadow-sm transition-transform duration-300 group-hover:scale-105"
+              className="relative h-12 w-12 rounded-2xl border-2 border-white object-cover object-[78%_center] shadow-md transition-transform duration-300 group-hover:scale-[1.03]"
             />
+            <span className="absolute right-0 bottom-0 h-3.5 w-3.5 rounded-full border-2 border-stone-50 bg-teal-500 shadow-sm"></span>
           </button>
           <button
             type="button"
@@ -173,34 +176,44 @@ const Header = () => {
         </div>
       )}
 
-      {profileModalOpen && (
+      {profileModalOpen &&
+        createPortal(
         <div
-          className="fixed inset-0 z-[70] grid place-items-center bg-stone-950/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[70] grid place-items-center bg-stone-950/55 p-4 backdrop-blur-md"
           role="dialog"
           aria-modal="true"
           aria-label="Profile photo"
           onClick={() => setProfileModalOpen(false)}
         >
           <div
-            className="relative h-[min(82vh,760px)] w-[min(92vw,560px)] overflow-hidden rounded-3xl shadow-2xl"
+            className="relative w-full max-w-sm overflow-hidden rounded-[2rem] border border-stone-200 bg-white p-3 shadow-2xl md:max-w-md"
             onClick={(event) => event.stopPropagation()}
           >
             <button
               type="button"
               onClick={() => setProfileModalOpen(false)}
-              className="absolute top-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-stone-950/70 text-white backdrop-blur transition-colors hover:bg-stone-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className="absolute top-6 right-6 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 bg-white/90 text-stone-700 shadow-sm backdrop-blur transition-colors hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
               aria-label="Close profile photo"
             >
               <i className="ri-close-line text-2xl"></i>
             </button>
-            <img
-              src="/images/profile.jpg"
-              alt="Frane Kuzmanić"
-              className="h-full w-full object-cover object-[78%_center]"
-            />
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[1.4rem] bg-stone-100">
+              <img
+                src="/images/profile.jpg"
+                alt="Frane Kuzmanić"
+                className="h-full w-full object-cover object-[78%_center]"
+              />
+            </div>
+            <div className="px-2 pt-4 pb-2 text-center">
+              <p className="text-lg font-semibold text-stone-900">
+                Frane Kuzmanić
+              </p>
+              <p className="text-sm text-stone-500">Full-stack Developer</p>
+            </div>
           </div>
-        </div>
-      )}
+        </div>,
+          document.body,
+        )}
     </header>
   )
 }
