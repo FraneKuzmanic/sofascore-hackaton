@@ -1022,8 +1022,8 @@ const ContactSection = () => (
 
 const Footer = () => (
   <footer className="border-t border-stone-900 bg-stone-950 py-8">
-    <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 md:flex-row md:px-12">
-      <div className="flex flex-col items-center gap-2 text-sm text-stone-500 md:flex-row md:gap-6">
+    <div className="mx-auto flex max-w-7xl items-center justify-center px-6 text-center md:px-12">
+      <div className="flex flex-col items-center justify-center gap-2 text-sm text-stone-500 md:flex-row md:gap-6">
         <span className="font-medium text-stone-400">
           Copyright 2026 Frane Kuzmanić
         </span>
