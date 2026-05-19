@@ -40,6 +40,7 @@ const PingDot = ({ size = 'sm' }: PingDotProps) => {
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [profileModalOpen, setProfileModalOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,6 +50,19 @@ const Header = () => {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    if (!profileModalOpen) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setProfileModalOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [profileModalOpen])
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id)
@@ -68,17 +82,27 @@ const Header = () => {
       style={glassHeaderStyle}
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 md:px-12">
-        <button
-          onClick={() => scrollToSection('hero')}
-          className="group flex items-center gap-3"
-        >
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-stone-900 font-mono text-lg font-bold text-stone-50 transition-colors duration-300 group-hover:bg-teal-600">
-            FK
-          </div>
-          <span className="hidden text-lg font-semibold tracking-tight sm:block">
-            Frane Kuzmanic
-          </span>
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setProfileModalOpen(true)}
+            className="group rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
+            aria-label="Open profile photo"
+          >
+            <img
+              src="/images/profile.jpg"
+              alt="Frane Kuzmanić"
+              className="h-10 w-10 rounded-xl border border-stone-200 object-cover object-[78%_center] shadow-sm transition-transform duration-300 group-hover:scale-105"
+            />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollToSection('hero')}
+            className="hidden text-lg font-semibold tracking-tight transition-colors hover:text-teal-700 sm:block"
+          >
+            Frane Kuzmanić
+          </button>
+        </div>
 
         <nav className="hidden items-center gap-8 md:flex">
           {navSections.map((section) => (
@@ -148,6 +172,35 @@ const Header = () => {
           </div>
         </div>
       )}
+
+      {profileModalOpen && (
+        <div
+          className="fixed inset-0 z-[70] grid place-items-center bg-stone-950/80 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Profile photo"
+          onClick={() => setProfileModalOpen(false)}
+        >
+          <div
+            className="relative h-[min(82vh,760px)] w-[min(92vw,560px)] overflow-hidden rounded-3xl shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setProfileModalOpen(false)}
+              className="absolute top-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-stone-950/70 text-white backdrop-blur transition-colors hover:bg-stone-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              aria-label="Close profile photo"
+            >
+              <i className="ri-close-line text-2xl"></i>
+            </button>
+            <img
+              src="/images/profile.jpg"
+              alt="Frane Kuzmanić"
+              className="h-full w-full object-cover object-[78%_center]"
+            />
+          </div>
+        </div>
+      )}
     </header>
   )
 }
@@ -199,20 +252,20 @@ const CodeBlock = () => {
           {'\n\n'}
           {'  '}
           {kw('const')} frane{p(':')} Developer {kw('=')} {p('{')} {'\n'}
-          {'    '}role{p(':')} {str("'Frontend Engineer'")}
+          {'    '}role{p(':')} {str("'Full-stack Developer'")}
           {p(',')}
           {'\n'}
           {'    '}focus{p(':')} {p('[')}
-          {str("'UI/UX'")}
-          {p(',')} {str("'Performance'")}
-          {p(',')} {str("'Clean Code'")}
+          {str("'React'")}
+          {p(',')} {str("'.NET'")}
+          {p(',')} {str("'Web Apps'")}
           {p(']')}
           {p(',')}
           {'\n'}
           {'    '}stack{p(':')} {p('[')}
-          {str("'React'")}
-          {p(',')} {str("'TypeScript'")}
-          {p(',')} {str("'Tailwind'")}
+          {str("'JavaScript'")}
+          {p(',')} {str("'React'")}
+          {p(',')} {str("'.NET'")}
           {p(']')}
           {'\n'}
           {'  '}
@@ -276,14 +329,14 @@ const HeroSection = () => {
           </div>
 
           <h1 className="mb-6 text-4xl leading-[1.1] font-bold tracking-tight text-stone-900 md:text-5xl lg:text-6xl">
-            Software developer building reliable, elegant, and user-focused
-            web applications.
+            Full-stack developer building reliable React and .NET web
+            applications.
           </h1>
 
           <p className="mb-10 max-w-2xl text-lg leading-relaxed text-stone-600 md:text-xl">
-            I design and build clean frontend experiences, scalable application
-            interfaces, and practical digital products with attention to
-            performance, usability, and maintainable code.
+            I build practical web products across the stack, from React
+            interfaces to .NET services, with experience in CRM systems,
+            internal tools, tournament software, and learning platforms.
           </p>
 
           <div className="flex flex-wrap items-center gap-4">
@@ -377,26 +430,26 @@ const AboutSection = () => (
       <div className="grid grid-cols-1 items-start gap-16 lg:grid-cols-2">
         <div>
           <h2 className="mb-6 text-3xl font-bold text-stone-900">
-            Building interfaces that make sense.
+            Building useful software from idea to production.
           </h2>
           <div className="text-lg text-stone-600">
             <p className="mb-4">
-              I am a software developer focused on frontend engineering, UI
-              architecture, and creating intuitive user experiences. My goal is
-              to build practical applications that solve real problems while
-              maintaining high standards for code quality and performance.
+              I am a full-stack developer with professional experience in
+              React, .NET, and JavaScript applications. I have worked on CRM
+              software for medical and dental offices, internal device
+              management tools, and student organization web services.
             </p>
             <p className="mb-4">
-              Whether it is crafting a complex dashboard, an e-commerce
-              storefront, or a robust mobile application, I care deeply about
-              the details. I believe that good design and solid engineering go
-              hand-in-hand, and I strive to bridge the gap between design
-              systems and technical implementation.
+              I enjoy building software that is clear, useful, and maintainable.
+              My background combines frontend implementation, backend basics,
+              agile teamwork, sprint planning, and product demos from internship
+              and freelance-style project environments.
             </p>
             <p>
-              I am constantly learning and refining my craft, currently focused
-              on mastering advanced React patterns and expanding my backend
-              knowledge to become a more versatile engineer.
+              I am currently studying Software Engineering and Information
+              Systems at FER in Zagreb, with coursework in distributed systems,
+              advanced databases, business intelligence, microservices, and
+              advanced web software development.
             </p>
           </div>
         </div>
@@ -404,23 +457,23 @@ const AboutSection = () => (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <AboutCard
             icon="ri-layout-3-line"
-            title="Frontend-focused"
-            description="Specializing in modern web interfaces and responsive layouts."
+            title="Full-stack experience"
+            description="Professional work across React frontends, .NET services, and JavaScript applications."
           />
           <AboutCard
             icon="ri-reactjs-line"
-            title="React Ecosystem"
-            description="Proficient in React, Next.js, and React Native for cross-platform."
+            title="React development"
+            description="Built React applications from scratch to production, including internal company tools."
           />
           <AboutCard
             icon="ri-code-s-slash-line"
-            title="Clean Architecture"
-            description="Writing maintainable, scalable, and self-documenting code."
+            title="Agile teamwork"
+            description="Led sprint planning, estimation, delegation, and product demos as Scrum Master."
           />
           <AboutCard
             icon="ri-briefcase-line"
-            title="Open to Roles"
-            description="Seeking internships, junior roles, or freelance opportunities."
+            title="FER background"
+            description="MS student in Software Engineering and Information Systems at University of Zagreb FER."
           />
         </div>
       </div>
@@ -458,15 +511,14 @@ const FeaturedProject = () => (
             <i className="ri-kanban-view-2 text-xl"></i>
           </div>
           <h3 className="text-2xl font-bold text-stone-900">
-            TaskFlow Workspace
+            Go Tournament Maker
           </h3>
         </div>
         <p className="mb-8 text-lg text-stone-600">
-          A comprehensive task management application inspired by modern
-          productivity tools. Features include real-time collaboration,
-          drag-and-drop kanban boards, customizable workflows, and detailed
-          productivity analytics. Built with a focus on keyboard accessibility
-          and zero-latency optimistic UI updates.
+          Application for managing Go tournaments with Swiss-system player
+          pairing, ranking, score tracking, and automatic round generation. The
+          project focuses on making tournament administration faster, fairer,
+          and easier to follow.
         </p>
 
         <div className="mb-8">
@@ -474,7 +526,7 @@ const FeaturedProject = () => (
             Technologies
           </h4>
           <div className="flex flex-wrap gap-2">
-            {['React', 'TypeScript', 'Tailwind CSS', 'Zustand'].map((tech) => (
+            {['JavaScript', 'React', 'Tournament Logic', 'GitHub'].map((tech) => (
               <TagBadge key={tech} variant="pill">
                 {tech}
               </TagBadge>
@@ -484,44 +536,38 @@ const FeaturedProject = () => (
 
         <div className="mt-auto flex items-center gap-4">
           <a
-            href="#"
+            href="https://github.com/FraneKuzmanic/Go-tournament-maker"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-600"
           >
-            <i className="ri-external-link-line"></i> Live Demo
+            <i className="ri-external-link-line"></i> Project
           </a>
           <a
-            href="#"
+            href="https://github.com/FraneKuzmanic/Go-tournament-maker"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-5 py-2.5 text-sm font-medium text-stone-600 transition-colors hover:border-stone-300 hover:text-stone-900"
           >
-            <i className="ri-github-fill"></i> Source
+            <i className="ri-github-fill"></i> GitHub
           </a>
         </div>
       </div>
 
-      <div className="relative flex min-h-[300px] items-center justify-center overflow-hidden border-l border-stone-200 bg-stone-100 p-8 lg:p-12">
-        <div className="w-full max-w-sm transform overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm transition-transform duration-500 group-hover:scale-105">
-          <div className="flex h-10 items-center gap-4 border-b border-stone-100 px-4">
-            <div className="flex gap-1.5">
-              <div className="h-2.5 w-2.5 rounded-full bg-stone-200"></div>
-              <div className="h-2.5 w-2.5 rounded-full bg-stone-200"></div>
-            </div>
-            <div className="h-4 w-32 rounded bg-stone-100"></div>
-          </div>
-          <div className="grid grid-cols-3 gap-4 p-4">
-            <div className="flex h-48 flex-col gap-2 rounded-lg border border-stone-100 bg-stone-50 p-3">
-              <div className="mb-2 h-3 w-16 rounded bg-stone-200"></div>
-              <div className="h-16 rounded border border-stone-200 bg-white shadow-sm"></div>
-              <div className="h-16 rounded border border-stone-200 bg-white shadow-sm"></div>
-            </div>
-            <div className="flex h-48 flex-col gap-2 rounded-lg border border-stone-100 bg-stone-50 p-3">
-              <div className="mb-2 h-3 w-20 rounded bg-stone-200"></div>
-              <div className="h-16 rounded border border-stone-200 bg-white shadow-sm"></div>
-            </div>
-            <div className="flex h-48 flex-col gap-2 rounded-lg border border-stone-100 bg-stone-50 p-3">
-              <div className="mb-2 h-3 w-12 rounded bg-stone-200"></div>
-              <div className="h-16 rounded border border-stone-200 bg-white opacity-50 shadow-sm"></div>
-            </div>
-          </div>
+      <div className="relative flex min-h-[300px] items-center justify-center overflow-hidden border-l border-stone-200 bg-stone-100">
+        <img
+          src="/images/go-tournament.jpg"
+          alt="Go stones on a board"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-950/55 via-stone-900/10 to-transparent"></div>
+        <div className="absolute right-6 bottom-6 left-6 rounded-2xl border border-white/20 bg-white/85 p-5 shadow-lg backdrop-blur-md">
+          <p className="font-mono text-xs tracking-wider text-teal-700 uppercase">
+            Go Tournament Maker
+          </p>
+          <p className="mt-2 text-sm font-medium text-stone-900">
+            Swiss-system pairing, score tracking, and automatic rounds.
+          </p>
         </div>
       </div>
     </div>
@@ -530,28 +576,27 @@ const FeaturedProject = () => (
 
 const EcommerceProject = () => (
   <div className="group col-span-1 flex flex-col overflow-hidden rounded-3xl border border-stone-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-    <div className="relative flex h-64 items-center justify-center overflow-hidden border-b border-stone-200 bg-stone-100 p-8">
-      <div className="flex w-full max-w-xs transform flex-col gap-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm transition-transform duration-500 group-hover:scale-105">
-        <div className="h-32 w-full rounded-lg bg-stone-100"></div>
-        <div className="flex items-center justify-between">
-          <div className="h-4 w-24 rounded bg-stone-200"></div>
-          <div className="h-6 w-12 rounded-full bg-teal-100"></div>
-        </div>
-      </div>
+    <div className="relative h-64 overflow-hidden border-b border-stone-200 bg-stone-100">
+      <img
+        src="/images/flipmemo.jpg"
+        alt="Dictionary page for language learning"
+        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-stone-950/45 via-transparent to-transparent"></div>
     </div>
     <div className="flex flex-1 flex-col p-8">
       <h3 className="mb-3 text-xl font-bold text-stone-900">
-        Lumina E-commerce
+        FlipMemo
       </h3>
       <p className="mb-6 flex-1 text-stone-600">
-        A headless e-commerce storefront with a custom design system. Features
-        complex cart state management, simulated checkout flows, and dynamic
-        product filtering.
+        Team project for learning foreign languages with spaced repetition. It
+        helps users review vocabulary at the right time and was graded with a
+        score of 100%.
       </p>
 
       <div className="mb-8">
         <div className="flex flex-wrap gap-2">
-          {['Next.js', 'Framer Motion', 'Stripe API'].map((tech) => (
+          {['Team Project', 'Spaced Repetition', 'Language Learning'].map((tech) => (
             <TagBadge key={tech} variant="border">
               {tech}
             </TagBadge>
@@ -561,14 +606,18 @@ const EcommerceProject = () => (
 
       <div className="mt-auto flex items-center gap-4 border-t border-stone-100 pt-6">
         <a
-          href="#"
+          href="https://github.com/DujeStolfa/olimplusplus"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-1 text-sm font-medium text-stone-900 transition-colors hover:text-teal-600"
         >
-          <i className="ri-external-link-line"></i> View Demo
+          <i className="ri-external-link-line"></i> View Project
         </a>
         <div className="h-1 w-1 rounded-full bg-stone-300"></div>
         <a
-          href="#"
+          href="https://github.com/DujeStolfa/olimplusplus"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-1 text-sm text-stone-500 transition-colors hover:text-stone-900"
         >
           <i className="ri-github-fill"></i> Source Code
@@ -580,36 +629,27 @@ const EcommerceProject = () => (
 
 const DashboardProject = () => (
   <div className="group col-span-1 flex flex-col overflow-hidden rounded-3xl border border-stone-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-    <div className="relative flex h-64 items-center justify-center overflow-hidden border-b border-stone-800 bg-stone-900 p-8">
-      <div className="flex w-full max-w-xs transform flex-col gap-3 rounded-xl border border-stone-700 bg-stone-800 p-4 shadow-lg transition-transform duration-500 group-hover:scale-105">
-        <div className="flex gap-2">
-          <div className="h-16 flex-1 rounded-lg bg-stone-700"></div>
-          <div
-            className="h-16 flex-1 rounded-lg"
-            style={{
-              background: 'rgba(20, 184, 166, 0.1)',
-              border: '1px solid rgba(20, 184, 166, 0.2)',
-            }}
-          ></div>
-        </div>
-        <div className="relative h-24 w-full overflow-hidden rounded-lg bg-stone-700">
-          <div className="absolute right-0 bottom-0 left-0 h-1/2 bg-gradient-to-t from-stone-800 to-transparent"></div>
-        </div>
-      </div>
+    <div className="relative h-64 overflow-hidden border-b border-stone-800 bg-stone-900">
+      <img
+        src="/images/prometheus.jpg"
+        alt="Open book for literature learning"
+        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-stone-950/75 via-stone-950/10 to-transparent"></div>
     </div>
     <div className="flex flex-1 flex-col p-8">
       <h3 className="mb-3 text-xl font-bold text-stone-900">
-        DevMetrics Dashboard
+        Prometheus
       </h3>
       <p className="mb-6 flex-1 text-stone-600">
-        An analytics dashboard tracking developer productivity metrics.
-        Implements complex data visualization charts, dark mode support, and
-        RESTful API integration.
+        Online platform for learning, practicing, and testing knowledge in
+        Croatian literature, created to support structured study and knowledge
+        checks through a web application.
       </p>
 
       <div className="mb-8">
         <div className="flex flex-wrap gap-2">
-          {['React', 'Chart.js', 'Node.js'].map((tech) => (
+          {['Web Platform', 'Education', 'Croatian Literature'].map((tech) => (
             <TagBadge key={tech} variant="border">
               {tech}
             </TagBadge>
@@ -619,14 +659,18 @@ const DashboardProject = () => (
 
       <div className="mt-auto flex items-center gap-4 border-t border-stone-100 pt-6">
         <a
-          href="#"
+          href="https://github.com/FraneKuzmanic/Prometej"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-1 text-sm font-medium text-stone-900 transition-colors hover:text-teal-600"
         >
-          <i className="ri-external-link-line"></i> View Demo
+          <i className="ri-external-link-line"></i> View Project
         </a>
         <div className="h-1 w-1 rounded-full bg-stone-300"></div>
         <a
-          href="#"
+          href="https://github.com/FraneKuzmanic/Prometej"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-1 text-sm text-stone-500 transition-colors hover:text-stone-900"
         >
           <i className="ri-github-fill"></i> Source Code
@@ -706,40 +750,65 @@ const SkillCard = ({ icon, title, skills }: SkillCardProps) => (
 const SkillsSection = () => {
   const skillGroups = [
     {
-      icon: 'ri-window-line',
-      title: 'Frontend',
-      skills: ['React', 'TypeScript', 'JavaScript (ES6+)', 'HTML5', 'CSS3'],
-    },
-    {
-      icon: 'ri-palette-line',
-      title: 'Styling & UI',
+      icon: 'ri-code-s-slash-line',
+      title: 'Programming & Frameworks',
       skills: [
-        'Tailwind CSS',
-        'Responsive Design',
-        'Accessibility (a11y)',
-        'Design Systems',
-        'CSS Modules',
+        'JavaScript',
+        'Java',
+        'Python',
+        'C/C#',
+        'React',
+        '.NET',
+        'SQL',
+        'Node.js',
+        'Assembly',
       ],
     },
     {
-      icon: 'ri-smartphone-line',
-      title: 'Mobile',
-      skills: ['React Native', 'Expo', 'Mobile UI/UX'],
+      icon: 'ri-palette-line',
+      title: 'Frontend & Web',
+      skills: [
+        'React',
+        'JavaScript',
+        'HTML',
+        'CSS',
+        'Advanced Web Development',
+        'Responsive Interfaces',
+      ],
     },
     {
       icon: 'ri-server-line',
-      title: 'Backend Basics',
-      skills: ['Node.js', 'REST APIs', 'Express', 'SQL Basics'],
+      title: 'Backend & Data',
+      skills: ['.NET', 'Node.js', 'SQL', 'MongoDB', 'REST APIs', 'Databases'],
     },
     {
       icon: 'ri-tools-line',
-      title: 'Tools',
-      skills: ['Git & GitHub', 'VS Code', 'Figma', 'Webpack/Vite'],
+      title: 'Tools & DevOps',
+      skills: ['Git', 'Docker', 'Kubernetes', 'Azure DevOps', 'VS Code'],
     },
     {
-      icon: 'ri-rocket-line',
-      title: 'Other',
-      skills: ['C#', 'Python', 'OpenCL', 'Performance Optimization'],
+      icon: 'ri-team-line',
+      title: 'Workflow',
+      skills: [
+        'Scrum Master',
+        'Sprint Planning',
+        'Task Estimation',
+        'Product Demos',
+        'Team Coordination',
+      ],
+    },
+    {
+      icon: 'ri-global-line',
+      title: 'Languages & Other',
+      skills: [
+        'Croatian Native',
+        'English C1',
+        'Italian A2',
+        'German A2',
+        'Premiere Pro',
+        'Photoshop',
+        'Academic Choir Singing',
+      ],
     },
   ]
 
@@ -829,26 +898,51 @@ const ExperienceSection = () => (
 
       <div className="relative ml-3 space-y-12 border-l border-stone-200 pb-4 md:ml-4">
         <TimelineItem
-          title="Frontend Developer Freelancer"
-          period="2023 - Present"
-          organization="Self-Employed"
-          description="Developing responsive and performant websites for local businesses. Handling full project lifecycle from requirement gathering to design, implementation, and deployment."
-          tags={['React', 'Tailwind', 'Figma']}
-          isActive={true}
-        />
-        <TimelineItem
-          title="BSc in Computer Science"
-          period="2020 - 2024"
-          organization="University of Zagreb (Example)"
-          description="Focused on software engineering principles, algorithms, and web technologies. Completed major coursework in distributed systems and user interface design. Final project involved building a cross-platform mobile application."
-          tags={['C#', 'Python', 'Software Architecture']}
+          title="Full-stack Developer"
+          period="Sep 2023 - Oct 2025"
+          organization="Zeraxo"
+          description="Developed and maintained a CRM system for multiple medical and dental offices, focusing on patient management, scheduling, and financial modules."
+          tags={['React', '.NET', 'CRM']}
           isActive={false}
         />
         <TimelineItem
-          title="Open Source Contributor"
-          period="2022 - 2023"
-          organization="Various Projects"
-          description="Contributed bug fixes and feature enhancements to several React-based open-source UI libraries. Improved documentation and created code examples to help community onboarding."
+          title="React Frontend Developer Intern"
+          period="Oct 2025 - Jan 2026"
+          organization="Endava"
+          description="Built a React application for company device management from scratch to production and led the project as Scrum Master, handling sprint planning, task estimation, delegation, and product demos."
+          tags={['React', 'Scrum Master', 'Product Demos']}
+          isActive={false}
+        />
+        <TimelineItem
+          title="Full-stack Developer Trainee"
+          period="Mar 2023 - Apr 2023"
+          organization="Pixion"
+          description="Gained hands-on experience in full-stack JavaScript development through an intensive program focused on the MERN stack."
+          tags={['JavaScript', 'MERN', 'Full-stack']}
+          isActive={false}
+        />
+        <TimelineItem
+          title="MS Software Engineering and Information Systems"
+          period="Sep 2024 - Present"
+          organization="University of Zagreb, FER"
+          description="Coursework includes Distributed Systems, Parallel Programming, Business Intelligence, Advanced Databases, Advanced Web Software Development, and Agile Development of Digital Platforms with Microservices."
+          tags={['Distributed Systems', 'Microservices', 'Advanced Databases']}
+          isActive={true}
+        />
+        <TimelineItem
+          title="BS Computing"
+          period="Sep 2021 - Jul 2024"
+          organization="University of Zagreb, FER"
+          description="Worked as a student assistant for Introduction to Programming. Coursework included Object Oriented Programming, Databases, Operating Systems, Web Software Development, Computer Networks, Artificial Intelligence, and Software Engineering."
+          tags={['Student Assistant', 'Web Software Development', 'AI']}
+          isActive={false}
+        />
+        <TimelineItem
+          title="Web Development Team Coordinator & PR Team Member"
+          period="Dec 2023 - Jun 2025"
+          organization="EESTEC LC Zagreb"
+          description="Coordinated several web service projects for the student organization and conducted a web development workshop for 40+ participants on creating a personal portfolio website."
+          tags={['Coordination', 'Workshops', 'Web Development']}
           isActive={false}
         />
       </div>
@@ -869,9 +963,10 @@ const ContactSection = () => (
         Let's build something useful.
       </h2>
       <p className="mx-auto mb-12 max-w-2xl text-xl text-stone-400">
-        I am currently available for freelance opportunities, internships, and
-        junior developer roles. If you have a project that needs some help or a
-        team looking for a frontend developer, I would love to hear from you.
+        I am currently open to full-stack, React frontend, internship, junior,
+        and freelance opportunities. If you are building a product that needs a
+        practical developer with React, .NET, and agile teamwork experience, I
+        would love to hear from you.
       </p>
 
       <div className="mb-16 flex flex-col items-center justify-center gap-6 sm:flex-row">
@@ -883,7 +978,9 @@ const ContactSection = () => (
           <i className="ri-mail-send-line text-xl"></i> Email me
         </a>
         <a
-          href="#"
+          href="/cvEN.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex w-full items-center justify-center gap-2 rounded-full border border-stone-700 bg-stone-800 px-8 py-4 text-lg font-medium text-white transition-colors hover:bg-stone-700 sm:w-auto"
         >
           <i className="ri-file-download-line text-xl"></i> Resume
@@ -928,13 +1025,10 @@ const Footer = () => (
     <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 md:flex-row md:px-12">
       <div className="flex flex-col items-center gap-2 text-sm text-stone-500 md:flex-row md:gap-6">
         <span className="font-medium text-stone-400">
-          Copyright 2024 Frane Kuzmanic
+          Copyright 2026 Frane Kuzmanić
         </span>
         <span className="hidden h-1 w-1 rounded-full bg-stone-700 md:inline"></span>
-        <span>Software Developer</span>
-      </div>
-      <div className="flex items-center gap-2 font-mono text-sm text-stone-600">
-        <i className="ri-reactjs-line"></i> Built with React semantics
+        <span>Full-stack Developer</span>
       </div>
     </div>
   </footer>
